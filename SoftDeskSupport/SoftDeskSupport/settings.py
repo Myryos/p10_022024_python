@@ -37,10 +37,25 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
     'authentication',
     'issue_tracker'
 
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_USER_MODEL': 'authentication.models.User',
+    'DEFAULT_PAGINATION_CLASS': 'SoftDeskSupport.paginations.SoftDeskPagination',
+    'PAGE_SIZE': 5
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,7 +87,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'SoftDeskSupport.wsgi.application'
 
+AUTH_USER_MODEL = "authentication.User"
 
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
