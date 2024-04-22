@@ -2,9 +2,11 @@ from django.contrib.auth import authenticate, login, logout
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework import status
+
+from django.utils.decorators import method_decorator
 
 from rest_framework_simplejwt.tokens import RefreshToken
 

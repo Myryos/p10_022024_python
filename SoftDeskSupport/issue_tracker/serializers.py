@@ -24,7 +24,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ['title', 'description', 'project_type', 'created_time', 'contributors']
+        fields = ['id', 'title', 'description', 'project_type', 'created_time', 'contributors']
         read_only_fields = ['created_time', 'contributors']
     def create(self, validated_data):
         request = self.context.get('request')

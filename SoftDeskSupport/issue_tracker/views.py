@@ -16,6 +16,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_time']
 
     def get_queryset(self):
+        project = self.request.data.get('project')
+        if project is not None :
+            return Project.objects.filter(id=project).select_related("author").prefetch_related("contributors")
         return Project.objects.filter(author = self.request.user).select_related("author").prefetch_related("contributors").order_by("-id")
 
 class IssueViewSet(viewsets.ModelViewSet):
@@ -27,9 +30,16 @@ class IssueViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_time']
 
     def get_queryset(self):
-        project_id = self.kwargs['project']
+        project_id = self.request.data.get('project')
+        issue_id = self.request.data.get('issue')
+
         project = get_object_or_404(Project, id=project_id)
-        return Issue.objects.filter(project=project).select_related("author", "project").order_by("-id")
+
+        queryset = Issue.objects.filter(project=project)
+        if issue_id:
+            queryset = queryset.filter(id=issue_id)
+
+        return queryset.select_related("author", "project").order_by("-id")
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
@@ -40,9 +50,13 @@ class CommentViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_time']
 
     def get_queryset(self):
-        issue_id = self.kwargs('issue')
+        issue_id = self.request.data.get('issue')
+        comment_id = self.request.data.get('comment')
         issue = get_object_or_404(Issue, id=issue_id)
-        return Comment.objects.filter(issue=issue).select_related("issue").order_by("-id")
+        queryset = Comment.objects.filter(issue=issue)
+        if comment_id:
+            queryset = queryset.filter(id=comment_id)
+        return queryset.select_related("issue").order_by("-id")
         
 
 class ContributorViewSet(viewsets.ModelViewSet):

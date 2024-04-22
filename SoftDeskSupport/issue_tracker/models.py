@@ -32,7 +32,6 @@ class Issue(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='issues')
     title = models.CharField(max_length=100)
     description = models.TextField()
-    #assigned_to = models.ForeignKey("authentication.User", on_delete=models.CASCADE, related_name='assigned_issues')
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
     tag = models.CharField(max_length=10, choices=TAG_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='To Do') #Remplace default par STATUS_CHOICES.TODO
