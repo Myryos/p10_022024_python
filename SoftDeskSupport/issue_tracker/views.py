@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, filters
 from .models import Project, Issue, Comment, Contributor
@@ -32,6 +33,8 @@ class IssueViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         project_id = self.request.data.get('project')
         issue_id = self.request.data.get('issue')
+        if project_id is None and issue_id is None:
+            raise Http404()
 
         project = get_object_or_404(Project, id=project_id)
 
@@ -52,11 +55,13 @@ class CommentViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         issue_id = self.request.data.get('issue')
         comment_id = self.request.data.get('comment')
+        if issue_id is None and comment_id is None:
+            raise Http404()
         issue = get_object_or_404(Issue, id=issue_id)
-        queryset = Comment.objects.filter(issue=issue)
+        queryset = Comment.objects.filter(issue=issue).order_by("-id")
         if comment_id:
             queryset = queryset.filter(id=comment_id)
-        return queryset.select_related("issue").order_by("-id")
+        return queryset.select_related("issue")
         
 
 class ContributorViewSet(viewsets.ModelViewSet):
